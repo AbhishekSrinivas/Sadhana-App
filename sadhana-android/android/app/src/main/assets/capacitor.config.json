@@ -1,0 +1,11 @@
+{
+	"appId": "com.abhishek.sadhana",
+	"appName": "Sadhana",
+	"webDir": "www",
+	"backgroundColor": "#1b1f2a",
+	"plugins": {
+		"SystemBars": {
+			"insetsHandling": "native"
+		}
+	}
+}
