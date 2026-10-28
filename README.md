@@ -1,6 +1,6 @@
 # Sadhana
 
-A devotional app for my phone: mantras, japa counting, festivals and a calendar. It is one HTML file that works offline, wrapped for Android with Capacitor.
+A devotional app for my phone with mantras, japa counting, festivals and a calendar. It is one HTML file that works offline, and Capacitor wraps it for Android.
 
 - `sadhana-android/www/index.html` is the app
 - `sadhana-android/` is the Capacitor project
