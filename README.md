@@ -6,9 +6,13 @@ A devotional app for my phone with mantras, japa counting, festivals and a calen
 - `sadhana-android/` is the Capacitor project
 - `.github/workflows/android.yml` builds the APK
 
-## Build the APK
+## Install
 
-Run **Build Sadhana APK** from the Actions tab, wait about five minutes, download the artifact and unzip it to get `app-debug.apk`. Copy it to the phone and allow installs from that source.
+Download `Sadhana.apk` from the [latest release](https://github.com/AbhishekSrinivas/Sadhana-App/releases/latest), open it on an Android phone and allow installs from your browser or file manager when asked. Every push to `main` rebuilds the APK and replaces the release. The APK is debug-signed, so installing a new one over the old one keeps your data.
+
+## Build the APK yourself
+
+Run **Build Sadhana APK** from the Actions tab and download the artifact, or build locally.
 
 With Android Studio: `cd sadhana-android && npm install && npx cap sync android && npx cap open android`.
 
