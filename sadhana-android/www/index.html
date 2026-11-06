@@ -732,6 +732,10 @@ button.card:active, .card[role="button"]:active, a.card:active, .card[tabindex]:
 @keyframes glCard { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
 .panel:not([hidden]) .card { animation: glCard .6s var(--spring) both; }
 
+.contmenu { position: fixed; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 6px; padding: 10px; border-radius: 18px; min-width: 220px; }
+.contmenu button { font: inherit; padding: 12px 14px; border-radius: 12px; border: 0; background: transparent; color: var(--fg); cursor: pointer; min-height: 44px; }
+.contmenu .cmx { color: #c0392b; font-weight: 600; }
+.frow.c1 { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
 </style>
 
 <div class="cosmos" id="cosmos" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
@@ -3610,10 +3614,49 @@ var PPARSE = (function () {
   var LKEY = "navadurga-last", LAST = {}; try { LAST = JSON.parse(localStorage.getItem(LKEY)) || {}; } catch (e) { LAST = {}; }
   function lastSave() { try { localStorage.setItem(LKEY, JSON.stringify(LAST)); } catch (e) {} }
   function noteLast() {
-    if (cur === "D" || cur === "F" || cur === "C" || cur === "X") { LAST.sec = curFull(); LAST.at = "s"; } else if (cur === "M") { LAST.m = mId; LAST.at = "m"; } else return;
+    if (cur === "D" || cur === "F" || cur === "C" || cur === "X") { LAST.sec = curFull(); LAST.at = "s"; LAST.st = Date.now(); } else if (cur === "M") { LAST.m = mId; LAST.at = "m"; LAST.mt = Date.now(); } else return;
     lastSave();
   }
+  var CONT_MS = 14 * 864e5;
+  function pruneLast() {
+    var n = Date.now(), ch = false;
+    if (LAST.sec && !LAST.st) { LAST.st = n; ch = true; }
+    if (LAST.m && !LAST.mt) { LAST.mt = n; ch = true; }
+    if (LAST.sec && n - LAST.st > CONT_MS) { delete LAST.sec; delete LAST.st; ch = true; }
+    if (LAST.m && n - LAST.mt > CONT_MS) { delete LAST.m; delete LAST.mt; ch = true; }
+    if (ch) lastSave();
+  }
+  function removeCont(go) {
+    if (String(go).indexOf("M:") === 0) { delete LAST.m; delete LAST.mt; } else { delete LAST.sec; delete LAST.st; }
+    lastSave(); if (cur === "G") renderGen();
+  }
+  /* long press on the Continue row offers removal */
+  (function () {
+    var tm = 0, sx = 0, sy2 = 0, fired = false, menu = null;
+    function closeMenu() { if (menu) { menu.remove(); menu = null; } }
+    function openMenu(row) {
+      closeMenu(); var go = row.getAttribute("data-go"), r = row.getBoundingClientRect();
+      menu = document.createElement("div"); menu.className = "contmenu glass"; menu.setAttribute("role", "dialog");
+      menu.innerHTML = '<button type="button" class="cmx">Remove from For you</button><button type="button" class="cmc">Cancel</button>';
+      menu.style.top = Math.max(8, Math.min(window.innerHeight - 120, r.bottom + 6)) + "px";
+      document.body.appendChild(menu);
+      menu.querySelector(".cmx").onclick = function () { closeMenu(); removeCont(go); toast("Removed from For you"); };
+      menu.querySelector(".cmc").onclick = closeMenu;
+      if (navigator.vibrate) try { navigator.vibrate(15); } catch (e) {}
+    }
+    document.addEventListener("pointerdown", function (e) {
+      if (menu && !e.target.closest(".contmenu")) closeMenu();
+      var row = e.target.closest && e.target.closest(".frow.c1"); fired = false; clearTimeout(tm); if (!row) return;
+      sx = e.clientX; sy2 = e.clientY;
+      tm = setTimeout(function () { fired = true; openMenu(row); }, 550);
+    }, true);
+    document.addEventListener("pointermove", function (e) { if (tm && (Math.abs(e.clientX - sx) > 10 || Math.abs(e.clientY - sy2) > 10)) { clearTimeout(tm); tm = 0; } }, true);
+    ["pointerup", "pointercancel", "scroll"].forEach(function (n) { document.addEventListener(n, function () { clearTimeout(tm); tm = 0; }, true); });
+    document.addEventListener("click", function (e) { if (fired && e.target.closest && e.target.closest(".frow.c1")) { e.stopPropagation(); e.preventDefault(); fired = false; } }, true);
+    document.addEventListener("contextmenu", function (e) { if (e.target.closest && e.target.closest(".frow.c1")) e.preventDefault(); }, true);
+  })();
   function contRows() {
+    pruneLast();
     var r = [], TL = { o: "Overview", c: "Cards", m: "Mantras" };
     if (LAST.sec) {
       var q = LAST.sec.split(":");
