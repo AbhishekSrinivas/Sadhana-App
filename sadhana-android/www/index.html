@@ -3281,7 +3281,7 @@ var PPARSE = (function () {
   }
   document.addEventListener("click", function (e) {
     var f = e.target.closest("[data-fav]");
-    if (f) { var on = toggleFav(f.getAttribute("data-fav")); f.textContent = on ? "\u2764\uFE0F Saved" : "\uD83E\uDD0D Save"; toast(on ? "\u2764\uFE0F Saved to My mantras" : "Removed from My mantras"); return; }
+    if (f) { var on = toggleFav(f.getAttribute("data-fav")); f.textContent = on ? "\u2764\uFE0F Saved" : "\uD83E\uDD0D Save"; toast(on ? "\u2764\uFE0F Added to Favorites" : "Removed from Favorites"); return; }
     var s = e.target.closest("[data-share]"); if (s) { shareMantra(s.getAttribute("data-share")); return; }
     if (e.target.closest("#simpleBtn")) { lsSet(SMK, lsGet(SMK, "0") === "1" ? "0" : "1"); applyPrefs(); if (cur === "G") renderGen(); toast(lsGet(SMK, "0") === "1" ? "\u2728 Simple mode on" : "Simple mode off"); return; }
     if (e.target.closest("#searchBtn")) { openHomeSearch(); return; }
@@ -3419,8 +3419,8 @@ var PPARSE = (function () {
     var tm = todayMantra(); rows += frow("c4", "\uD83C\uDF1E Today's mantra", tm.k, LIB.mantras[tm.id].title, tm.day + " \u00B7 " + (devOf(tm.k) ? devOf(tm.k).name : ""), "M:" + tm.id);
     var nx = secs().map(function (s) { return { s: s, f: nextOf(s.ids) }; }).filter(function (x) { return x.f; }).sort(function (a, b) { return a.f.date < b.f.date ? -1 : 1; })[0];
     if (nx && !(sgOn && sg.go === nx.s.v)) rows += frow("c3", "\uD83E\uDE94 Next festival section", nx.s.deity, nx.s.name, whenTxt(nx.f), nx.s.v);
+    var fv = favs(); h += '<div class="sech">\u2764\uFE0F Favorites</div>' + (fv.length ? '<div class="mlist">' + fv.map(mrow).join("") + "</div>" : '<p class="mut fine favhint">Tap \uD83E\uDD0D Save on any mantra and it will show up here.</p>');
     if (rows) h += '<div class="sech">\u2728 For you</div><div class="frows">' + rows + "</div>";
-    var fv = favs(); if (fv.length) h += '<div class="sech">\u2764\uFE0F My mantras</div><div class="mlist">' + fv.map(mrow).join("") + "</div>";
     h += '</div><div class="gr"><div class="sech">\uD83D\uDD49\uFE0F Deities and gurus</div><div class="dgrid">';
     LIB.deities.slice().sort(function (a, b) { return a.name.localeCompare(b.name); }).forEach(function (d) {
       var n = d.key === "guru" ? LIB.groups.guru.common.length + LIB.groups.guru.smarta.length + LIB.groups.guru.vaishnava.length : LIB.groups[d.key].length, t = lt(d.key);
