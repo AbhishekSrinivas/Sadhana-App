@@ -3178,6 +3178,7 @@ var PPARSE = (function () {
     o.pitru = '<circle cx="24" cy="22" r="19" fill="#D5DEE8" opacity=".5"/><path d="M10 33q14 12 28 0z" fill="#C9962B" stroke="#8a6414" stroke-width=".8"/><path d="M8 33h6" stroke="#8a6414" stroke-width="2.200" stroke-linecap="round"/><path d="M24 31q-6-8 0-17q6 9 0 17z" fill="#F6A21F"/><path d="M24 29q-3-5 0-10q3 5 0 10z" fill="#FFE08A"/><path d="M12 45l3-9M16 45l1-10M20 45l-2-8M36 45l-3-9M32 45l-1-10M28 45l2-8" stroke="#5E9E3E" stroke-width="1.400" stroke-linecap="round"/><path d="M24 8v2M20 10l1 1.500M28 10l-1 1.500" stroke="#F2B84A" stroke-width="1.200" stroke-linecap="round"/>';
     o.stotram = '<circle cx="24" cy="24" r="19" fill="#F2DDBF" opacity=".55"/><rect x="8" y="12" width="32" height="24" rx="3" fill="#E9CE9A" stroke="#8A4A1E" stroke-width="1.200"/><path d="M13 18h22M13 23h22M13 28h16" stroke="#8A4A1E" stroke-width="1.400" stroke-linecap="round"/><circle cx="14" cy="32" r="1.200" fill="#8A4A1E"/><circle cx="34" cy="32" r="1.200" fill="#8A4A1E"/><path d="M6 14v20M42 14v20" stroke="#6F3A14" stroke-width="2.200" stroke-linecap="round"/><path d="M24 4q-2 4 0 6q2-2 0-6z" fill="#F6A21F"/>';
     o.protect = o.hanuman;
+    o.favorites = '<circle cx="24" cy="24" r="19" fill="#F9D3E2" opacity=".6"/><path d="M24 37C10 28 10 15 18 13c4-1 6 2 6 4 0-2 2-5 6-4 8 2 8 15-6 24z" fill="#E0457B" stroke="#A4124F" stroke-width=".9"/>';
     o.peace = '<circle cx="24" cy="24" r="19" fill="#CBEBEF" opacity=".6"/><path d="M24 36c-9 0-14-5-15-11 6 0 10 2 15 11zM24 36c9 0 14-5 15-11-6 0-10 2-15 11zM24 36c-5-5-6-12 0-20 6 8 5 15 0 20z" fill="#F7B6CF" stroke="#C2185B" stroke-width=".8"/><path d="M10 40q14 4 28 0" stroke="#2A7F8A" stroke-width="1.600" fill="none" stroke-linecap="round"/>';
     return o;
   })();
@@ -3185,7 +3186,7 @@ var PPARSE = (function () {
     if (k === "om") return '<span class="avt" lang="sa">ॐ</span>';
     return '<svg class="avt" viewBox="0 0 48 48" aria-hidden="true">' + (AVF[k] || "") + "</svg>";
   }
-  var DEMO = { protect: "\uD83D\uDEE1\uFE0F", ganesha: "\uD83D\uDC18", shiva: "\uD83D\uDD31", vishnu: "\uD83D\uDC1A", krishna: "\uD83E\uDE88", rama: "\uD83C\uDFF9", hanuman: "\uD83D\uDCAA", durga: "\uD83E\uDD81", lakshmi: "\uD83E\uDEB7", saraswati: "\uD83D\uDCDA", gauri: "\uD83C\uDF3A", surya: "\u2600\uFE0F", guru: "\uD83D\uDE4F", dakshinamurthy: "\uD83C\uDF33", brahma: "\uD83D\uDCFF", stotram: "\uD83D\uDCDC", kalabhairava: "\uD83D\uDC15", venkateswara: "\uD83D\uDED5", narasimha: "\uD83D\uDD25", subrahmanya: "\uD83E\uDD9A", dattatreya: "\uD83D\uDC04", tulasi: "\uD83C\uDF3F", pitru: "\uD83E\uDE94", om: "\uD83D\uDD49\uFE0F", peace: "\uD83D\uDD4A\uFE0F" };
+  var DEMO = { protect: "\uD83D\uDEE1\uFE0F", ganesha: "\uD83D\uDC18", shiva: "\uD83D\uDD31", vishnu: "\uD83D\uDC1A", krishna: "\uD83E\uDE88", rama: "\uD83C\uDFF9", hanuman: "\uD83D\uDCAA", durga: "\uD83E\uDD81", lakshmi: "\uD83E\uDEB7", saraswati: "\uD83D\uDCDA", gauri: "\uD83C\uDF3A", surya: "\u2600\uFE0F", guru: "\uD83D\uDE4F", dakshinamurthy: "\uD83C\uDF33", brahma: "\uD83D\uDCFF", stotram: "\uD83D\uDCDC", kalabhairava: "\uD83D\uDC15", venkateswara: "\uD83D\uDED5", narasimha: "\uD83D\uDD25", subrahmanya: "\uD83E\uDD9A", dattatreya: "\uD83D\uDC04", tulasi: "\uD83C\uDF3F", pitru: "\uD83E\uDE94", om: "\uD83D\uDD49\uFE0F", peace: "\uD83D\uDD4A\uFE0F", favorites: "\u2764\uFE0F" };
   var FEMO = { ganesha: "\uD83D\uDC18\uD83C\uDF3F", shivaratri: "\uD83D\uDD31\uD83C\uDF19", deepavali: "\uD83E\uDE94\uD83C\uDF86", varalakshmi: "\uD83E\uDEB7\uD83C\uDF3A", durga: "\uD83C\uDF38" };
   function de(k) { return DEMO[k] ? DEMO[k] + "\u00A0" : ""; }
   function badge(k, big) { var t = lt(k); return '<span class="bdg' + (big ? " big" : "") + '" style="--cl:' + t[1] + ";--cd:" + t[2] + '">' + avatar(k) + "</span>"; }
@@ -3236,6 +3237,10 @@ var PPARSE = (function () {
   function favs() { try { var a = JSON.parse(lsGet(FVK, "[]")); return Array.isArray(a) ? a.filter(function (id) { return LIB.mantras[id]; }) : []; } catch (e) { return []; } }
   function isFav(id) { return favs().indexOf(id) >= 0; }
   function toggleFav(id) { var a = favs(), i = a.indexOf(id); if (i >= 0) a.splice(i, 1); else a.unshift(id); lsSet(FVK, JSON.stringify(a)); return i < 0; }
+  LIB.themes.favorites = ["Rose", "#C2185B", "#F78FB9", "#ffffff", "#2d0615", 7];
+  LIB.deities.push({ key: "favorites", name: "Favorites", dev: "\u2764", sub: "Mantras you saved" });
+  LIB.info.favorites = { about: "Your saved mantras in one place. Open any mantra and tap Save to add it here. The newest save is at the top.", facts: [["How to add", "Open a mantra and tap Save"], ["How to remove", "Open it here and tap Saved again"], ["Stored", "On this device only"]] };
+  Object.defineProperty(LIB.groups, "favorites", { get: function () { return favs(); }, enumerable: true, configurable: true });
   var WKD = ["surya", "shiva", "hanuman", "ganesha", "guru", "lakshmi", "vishnu"], WKN = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   function todayMantra() { var d = new Date(), k = WKD[d.getDay()], ids = deityIds(k), doy = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 864e5); return { k: k, id: ids[doy % ids.length], day: WKN[d.getDay()] }; }
   function shareMantra(id) {
@@ -3419,10 +3424,9 @@ var PPARSE = (function () {
     var tm = todayMantra(); rows += frow("c4", "\uD83C\uDF1E Today's mantra", tm.k, LIB.mantras[tm.id].title, tm.day + " \u00B7 " + (devOf(tm.k) ? devOf(tm.k).name : ""), "M:" + tm.id);
     var nx = secs().map(function (s) { return { s: s, f: nextOf(s.ids) }; }).filter(function (x) { return x.f; }).sort(function (a, b) { return a.f.date < b.f.date ? -1 : 1; })[0];
     if (nx && !(sgOn && sg.go === nx.s.v)) rows += frow("c3", "\uD83E\uDE94 Next festival section", nx.s.deity, nx.s.name, whenTxt(nx.f), nx.s.v);
-    var fv = favs(); h += '<div class="sech">\u2764\uFE0F Favorites</div>' + (fv.length ? '<div class="mlist">' + fv.map(mrow).join("") + "</div>" : '<p class="mut fine favhint">Tap \uD83E\uDD0D Save on any mantra and it will show up here.</p>');
     if (rows) h += '<div class="sech">\u2728 For you</div><div class="frows">' + rows + "</div>";
     h += '</div><div class="gr"><div class="sech">\uD83D\uDD49\uFE0F Deities and gurus</div><div class="dgrid">';
-    LIB.deities.slice().sort(function (a, b) { return a.name.localeCompare(b.name); }).forEach(function (d) {
+    LIB.deities.slice().sort(function (a, b) { return a.key === "favorites" ? -1 : b.key === "favorites" ? 1 : a.name.localeCompare(b.name); }).forEach(function (d) {
       var n = d.key === "guru" ? LIB.groups.guru.common.length + LIB.groups.guru.smarta.length + LIB.groups.guru.vaishnava.length : LIB.groups[d.key].length, t = lt(d.key);
       h += '<button class="dc glass" type="button" data-go="GD:' + d.key + '" style="--cl:' + t[1] + ";--cd:" + t[2] + '">' + badge(d.key) + '<b>' + de(d.key) + esc(d.name) + '</b><small>' + esc(d.sub) + '</small><em>' + n + ' mantras</em></button>';
     });
@@ -3450,6 +3454,7 @@ var PPARSE = (function () {
     else {
       if (k === "guru") h += '<div class="trad" role="group" aria-label="Tradition"><button class="fbtn" type="button" data-trad="smarta" aria-pressed="' + (gTrad !== "vaishnava") + '">Smarta (Sringeri)</button><button class="fbtn" type="button" data-trad="vaishnava" aria-pressed="' + (gTrad === "vaishnava") + '">Sri Vaishnava</button></div>';
       h += '<div class="mlist">' + deityIds(k).map(mrow).join("") + "</div>";
+      if (k === "favorites" && !deityIds(k).length) h += '<p class="mut">Nothing saved yet. Open any mantra and tap \uD83E\uDD0D Save.</p>';
       h += '<p class="mut fine">Mantra texts are standard well-known verses. Please check pronunciation and use with your priest, elder or guru.</p>';
     }
     $("deityBody").innerHTML = h + "</div>";
