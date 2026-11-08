@@ -3911,6 +3911,20 @@ var PPARSE = (function () {
     var URL0 = "https://github.com/AbhishekSrinivas/Sadhana-App/releases/download/latest/";
     var btn = $("otaBtn"), stp = $("otaSt"); btn.hidden = false; stp.hidden = false; stp.textContent = "Version " + B;
     function st(m) { stp.textContent = m; }
+    /* native HTTP first: GitHub release downloads redirect without CORS headers, so a web fetch is blocked */
+    async function httpGet(u) {
+      var url = u + (u.indexOf("?") < 0 ? "?" : "&") + "t=" + Date.now(), e1 = "";
+      try {
+        var C = window.Capacitor, H = C && C.Plugins && C.Plugins.CapacitorHttp;
+        if (H && H.get) {
+          var r = await H.get({ url: url, responseType: "text", connectTimeout: 15000, readTimeout: 60000, headers: { "Cache-Control": "no-cache" } });
+          if (r.status >= 400) throw new Error("http " + r.status);
+          return typeof r.data === "string" ? r.data : JSON.stringify(r.data);
+        }
+      } catch (e) { e1 = String(e && e.message || e); if (/^http/.test(e1)) throw e; }
+      try { var f = await fetch(url, { cache: "no-store" }); if (!f.ok) throw new Error("http " + f.status); return await f.text(); }
+      catch (e) { throw new Error("net " + e1 + " | " + String(e && e.message || e)); }
+    }
     function db() { return new Promise(function (ok, no) { var q = indexedDB.open("sadhana-ota", 1); q.onupgradeneeded = function () { q.result.createObjectStore("f"); }; q.onsuccess = function () { ok(q.result); }; q.onerror = function () { no(q.error); }; }); }
     function put(v) { return db().then(function (d) { return new Promise(function (ok, no) { var t = d.transaction("f", "readwrite"); t.objectStore("f").put(v, "app"); t.oncomplete = ok; t.onerror = function () { no(t.error); }; }); }); }
     function bar() {
@@ -3922,17 +3936,15 @@ var PPARSE = (function () {
     async function check(manual) {
       try {
         st("Checking...");
-        var r = await fetch(URL0 + "version.json?t=" + Date.now(), { cache: "no-store" }); if (!r.ok) throw new Error("http " + r.status);
-        var v = await r.json(), pend = 0; try { pend = +localStorage.getItem("sadhana-ota-pending") || 0; } catch (e) {}
+        var v = JSON.parse(await httpGet(URL0 + "version.json")), pend = 0; try { pend = +localStorage.getItem("sadhana-ota-pending") || 0; } catch (e) {}
         if (v.build <= B) { st("You have the latest version (" + B + ")."); if (manual) toast("You have the latest version"); return; }
         if (v.build <= pend) { st("Update ready. Restart to apply."); bar(); return; }
         st("Downloading update...");
-        var h = await fetch(URL0 + "app.html?t=" + Date.now(), { cache: "no-store" }); if (!h.ok) throw new Error("http " + h.status);
-        var html = await h.text(); if (html.length < 500000 || html.indexOf("SADHANA_BUILD=" + v.build) < 0) throw new Error("bad file");
+        var html = await httpGet(URL0 + "app.html"); if (html.length < 500000 || html.indexOf("SADHANA_BUILD=" + v.build) < 0) throw new Error("bad file");
         await put({ build: v.build, html: html });
         try { localStorage.setItem("sadhana-ota-pending", String(v.build)); } catch (e) {}
         st("Update ready. Restart to apply."); bar();
-      } catch (e) { st(manual ? "Could not check for updates. Check your internet connection." : "Version " + B); }
+      } catch (e) { st(manual ? "Could not check for updates (" + String(e && e.message || e).slice(0, 80) + "). Check your internet connection." : "Version " + B); }
     }
     btn.addEventListener("click", function () { check(true); });
     try { localStorage.setItem("sadhana-ota-ok", String(B)); } catch (e) {}
