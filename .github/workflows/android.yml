@@ -35,10 +35,15 @@ jobs:
           npm install
           npm install @capacitor/haptics
 
+      - name: Split into app and launcher for self-updates
+        env:
+          BUILD_ID: ${{ github.run_number }}
+        run: python3 ota.py
+
       - name: Add the native speech and vibration bridge
         run: |
           cp native-shim.js www/native-shim.js
-          grep -q native-shim www/index.html || sed -i "s#</body>#<script src='native-shim.js'></script></body>#" www/index.html
+          grep -q native-shim www/app.html || sed -i "s#</body>#<script src='native-shim.js'></script></body>#" www/app.html
 
       - name: Sync web files into the app
         run: npx cap sync android
@@ -62,6 +67,6 @@ jobs:
         run: |
           cp android/app/build/outputs/apk/debug/app-debug.apk Sadhana.apk
           gh release delete latest --cleanup-tag --yes || true
-          gh release create latest Sadhana.apk \
+          gh release create latest Sadhana.apk www/app.html www/version.json \
             --title "Sadhana (latest build)" \
-            --notes "Debug APK built from commit ${GITHUB_SHA::7}. Download Sadhana.apk, open it on an Android device and allow installs from this source."
+            --notes "Debug APK built from commit ${GITHUB_SHA::7}. Download Sadhana.apk, open it on an Android device and allow installs from this source. app.html and version.json are what installed apps download when they check for updates."

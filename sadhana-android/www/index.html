@@ -893,6 +893,7 @@ button.card:active, .card[role="button"]:active, a.card:active, .card[tabindex]:
   </div>
   <button class="ghost dbtn" id="upBtn" type="button">Upload panchanga PDF</button>
   <button class="ghost dbtn" id="tourBtn" type="button">🔄 Restart tutorial</button>
+  <button class="ghost dbtn" id="otaBtn" type="button" hidden>⬇️ Check for updates</button><p class="mut fine" id="otaSt" hidden></p>
   <button class="ghost dbtn" id="chimeBtn" type="button" aria-pressed="true">Chime at milestones: On</button>
 </aside>
 
@@ -3903,6 +3904,40 @@ var PPARSE = (function () {
   $("tourSkip").addEventListener("click", tourClose);
   window.addEventListener("resize", function () { if (!$("tour").hidden) tourPlace(TOUR[tourI]); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("tour").hidden) tourClose(); });
+
+  /* app updates (APK build only: window.SADHANA_BUILD is set by the build) */
+  (function () {
+    var B = window.SADHANA_BUILD; if (!B) return;
+    var URL0 = "https://github.com/AbhishekSrinivas/Sadhana-App/releases/download/latest/";
+    var btn = $("otaBtn"), stp = $("otaSt"); btn.hidden = false; stp.hidden = false; stp.textContent = "Version " + B;
+    function st(m) { stp.textContent = m; }
+    function db() { return new Promise(function (ok, no) { var q = indexedDB.open("sadhana-ota", 1); q.onupgradeneeded = function () { q.result.createObjectStore("f"); }; q.onsuccess = function () { ok(q.result); }; q.onerror = function () { no(q.error); }; }); }
+    function put(v) { return db().then(function (d) { return new Promise(function (ok, no) { var t = d.transaction("f", "readwrite"); t.objectStore("f").put(v, "app"); t.oncomplete = ok; t.onerror = function () { no(t.error); }; }); }); }
+    function bar() {
+      if ($("otabar")) return; var b = document.createElement("div"); b.id = "otabar"; b.className = "glass";
+      b.style.cssText = "position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:99999;padding:12px 14px;display:flex;align-items:center;gap:12px;border-radius:18px;font:600 15px system-ui,sans-serif";
+      b.innerHTML = '<span style="flex:1">Update ready</span><button id="otago" class="ghost" type="button">Restart</button><button id="otax" class="ghost" type="button" aria-label="Later">Later</button>';
+      document.body.appendChild(b); $("otago").onclick = function () { location.href = "index.html"; }; $("otax").onclick = function () { b.remove(); };
+    }
+    async function check(manual) {
+      try {
+        st("Checking...");
+        var r = await fetch(URL0 + "version.json?t=" + Date.now(), { cache: "no-store" }); if (!r.ok) throw new Error("http " + r.status);
+        var v = await r.json(), pend = 0; try { pend = +localStorage.getItem("sadhana-ota-pending") || 0; } catch (e) {}
+        if (v.build <= B) { st("You have the latest version (" + B + ")."); if (manual) toast("You have the latest version"); return; }
+        if (v.build <= pend) { st("Update ready. Restart to apply."); bar(); return; }
+        st("Downloading update...");
+        var h = await fetch(URL0 + "app.html?t=" + Date.now(), { cache: "no-store" }); if (!h.ok) throw new Error("http " + h.status);
+        var html = await h.text(); if (html.length < 500000 || html.indexOf("SADHANA_BUILD=" + v.build) < 0) throw new Error("bad file");
+        await put({ build: v.build, html: html });
+        try { localStorage.setItem("sadhana-ota-pending", String(v.build)); } catch (e) {}
+        st("Update ready. Restart to apply."); bar();
+      } catch (e) { st(manual ? "Could not check for updates. Check your internet connection." : "Version " + B); }
+    }
+    btn.addEventListener("click", function () { check(true); });
+    try { localStorage.setItem("sadhana-ota-ok", String(B)); } catch (e) {}
+    setTimeout(function () { check(false); }, 6000);
+  })();
   $("tourBtn").addEventListener("click", function () { var k = tourKey(); closeDrawer(); try { localStorage.removeItem(TSKEY); } catch (e) {} setTimeout(function () { startTour(k); }, 300); });
   setTimeout(maybeTour, 700);
 })();
