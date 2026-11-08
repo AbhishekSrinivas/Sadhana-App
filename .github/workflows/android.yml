@@ -45,6 +45,9 @@ jobs:
           cp native-shim.js www/native-shim.js
           grep -q native-shim www/app.html || sed -i "s#</body>#<script src='native-shim.js'></script></body>#" www/app.html
 
+      - name: App icon (Panchanga wheel)
+        run: npx --yes @capacitor/assets generate --android
+
       - name: Sync web files into the app
         run: npx cap sync android
 
