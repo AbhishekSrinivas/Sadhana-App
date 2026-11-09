@@ -736,6 +736,8 @@ button.card:active, .card[role="button"]:active, a.card:active, .card[tabindex]:
 .contmenu button { font: inherit; padding: 12px 14px; border-radius: 12px; border: 0; background: transparent; color: var(--fg); cursor: pointer; min-height: 44px; }
 .contmenu .cmx { color: #c0392b; font-weight: 600; }
 .frow.c1 { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+/* wide landscape: the nav is a side rail. .hasSlider sets position: relative later in the file, so repeat position here */
+@media (orientation: landscape) and (min-width: 900px) { .gnav, .gnav.hasSlider { position: fixed; left: 0; top: 0; bottom: 0; height: fit-content; margin: auto 0 auto 8px; } }
 </style>
 
 <div class="cosmos" id="cosmos" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
