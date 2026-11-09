@@ -893,6 +893,7 @@ button.card:active, .card[role="button"]:active, a.card:active, .card[tabindex]:
   </div>
   <button class="ghost dbtn" id="upBtn" type="button">Upload panchanga PDF</button>
   <button class="ghost dbtn" id="tourBtn" type="button">🔄 Restart tutorial</button>
+  <a class="ghost dbtn" id="apkLink" href="https://github.com/AbhishekSrinivas/Sadhana-App/releases/download/latest/Sadhana.apk" download target="_blank" rel="noopener" style="display:block;box-sizing:border-box;text-align:center;text-decoration:none">⬇️ Download Android APK</a><p class="mut fine" id="apkNote">Android only. iPhone and iPad users keep using this page, because Apple does not allow APK installs.</p>
   <button class="ghost dbtn" id="otaBtn" type="button" hidden>⬇️ Check for updates</button><p class="mut fine" id="otaSt" hidden></p>
   <button class="ghost dbtn" id="chimeBtn" type="button" aria-pressed="true">Chime at milestones: On</button>
 </aside>
@@ -3819,7 +3820,7 @@ var PPARSE = (function () {
   function tmark(k) { var o = tseen(); if (o.all) return; o[k] = 1; try { localStorage.setItem(TSKEY, JSON.stringify(o)); } catch (e) {} }
   var TSEC = {
     home: [
-      { t: "Home", h: "\uD83D\uDE4F Vasudhaiva Kutumbakam \uD83D\uDE0A", p: "The whole world is one family. Welcome to Sadhana. Home is where the app opens. Note: audio works on mobile devices only.", sel: null },
+      { t: "Home", h: "\uD83D\uDE4F Vasudhaiva Kutumbakam \uD83D\uDE0A", p: "The whole world is one family. Welcome to Sadhana. Home is where the app opens. Note: audio works on mobile devices only." + (window.SADHANA_BUILD ? "" : " On Android you can download the APK from the menu. On iPhone and iPad, Apple does not allow APK installs, so keep using this page."), sel: null },
       { t: "Home", h: "\u2728 For you", p: "Your last section, today's suggestion and the next festival show up here.", sel: ".frow", skip: function () { return !document.querySelector(".frow"); } },
       { t: "Home", h: "Pick a deity", p: "Tap a deity or guru to learn about them and open their mantras. Each one has its own colour.", sel: ".dc" },
       { t: "Home", h: "Festivals", p: "Tap Festivals for sections like Navratri and Ganesh Chaturthi.", sel: "#gFab", act: closeSheet },
@@ -3907,7 +3908,7 @@ var PPARSE = (function () {
 
   /* app updates (APK build only: window.SADHANA_BUILD is set by the build) */
   (function () {
-    var B = window.SADHANA_BUILD; if (!B) return;
+    var B = window.SADHANA_BUILD; if (B) { var al = $("apkLink"), an = $("apkNote"); if (al) al.style.display = "none"; if (an) an.style.display = "none"; } if (!B) return;
     var URL0 = "https://github.com/AbhishekSrinivas/Sadhana-App/releases/download/latest/";
     var btn = $("otaBtn"), stp = $("otaSt"); btn.hidden = false; stp.hidden = false; stp.textContent = "Version " + B;
     function st(m) { stp.textContent = m; }
